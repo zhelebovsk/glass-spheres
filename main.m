@@ -66,41 +66,49 @@ end
 clear i k l q C1 C2 param j Gr I a index E L c r
 %% Вывод результатов
 for i = 1:2%size(S)
-    % изображения с окружностями
-    figure('Name',S(i).name)
-    I = imread(fullfile(D, S(i).name));
-    I = I(601:2300, 901:3000);
-    imshow(I)
-    hold on
-    %viscircles([300,300], 100);
-    viscircles([S(i).optic.Centroid(1),S(i).optic.Centroid(2)],...
-        S(i).optic.EquivDiameter/2,'EdgeColor','g');
-    for q = 1:size(S(i).part,2)
-        if S(i).part(q).check == true
-            color = 'r'; % red = true
-        else
-            color = 'b'; % blue = false
+    qqq = -1;
+    while qqq ~= 0
+        % изображения с окружностями
+        figure('Name',S(i).name)
+        I = imread(fullfile(D, S(i).name));
+        I = I(601:2300, 901:3000);
+        imshow(I)
+        hold on
+        %viscircles([300,300], 100);
+        viscircles([S(i).optic.Centroid(1),S(i).optic.Centroid(2)],...
+            S(i).optic.EquivDiameter/2,'EdgeColor','g');
+        for q = 1:size(S(i).part,2)
+            if S(i).part(q).check == true
+                color = 'r'; % red = true
+            else
+                color = 'b'; % blue = false
+            end
+            viscircles([S(i).part(q).c(1),S(i).part(q).c(2)],...
+                S(i).part(q).r,'EdgeColor',color);
+    %         text(S(i).part(q).c(1), S(i).part(q).c(2),...
+    %              {"d="+round(2*S(i).part(q).r,0)+"px"},...
+    %              'Color',color, 'FontSize', 14, 'EdgeColor', 'none',...
+    %              'BackgroundColor','w','FontName','consolas')
+             plot(S(i).part(q).c(1),S(i).part(q).c(2), 'black+',...
+                 'MarkerSize', 10, 'LineWidth', 1);
+            text(S(i).part(q).c(1), S(i).part(q).c(2),...clc
+                {"#"+q,"d = "+(1/0.575)*2*S(i).part(q).r+" \mu"+"m"},...
+                'Color',color, 'FontSize', 10, 'EdgeColor', 'none',...
+                'BackgroundColor','w','FontName','consolas')
+            text(100, 100,...
+                {"#"+i},...
+                'Color','black', 'FontSize', 14, 'EdgeColor', 'none',...
+                'BackgroundColor','w','FontName','consolas')
+        end    
+        %uiwait
+        qqq = input('qqq = ')
+        if qqq ~= 0
+            S(i).part(qqq).check = ~S(i).part(qqq).check;
         end
-        viscircles([S(i).part(q).c(1),S(i).part(q).c(2)],...
-            S(i).part(q).r,'EdgeColor',color);
-%         text(S(i).part(q).c(1), S(i).part(q).c(2),...
-%              {"d="+round(2*S(i).part(q).r,0)+"px"},...
-%              'Color',color, 'FontSize', 14, 'EdgeColor', 'none',...
-%              'BackgroundColor','w','FontName','consolas')
-         plot(S(i).part(q).c(1),S(i).part(q).c(2), 'black+',...
-             'MarkerSize', 10, 'LineWidth', 1);
-        text(S(i).part(q).c(1), S(i).part(q).c(2),...
-            {"#"+q,"d = "+(1/0.575)*2*S(i).part(q).r+" \mu"+"m"},...
-            'Color',color, 'FontSize', 10, 'EdgeColor', 'none',...
-            'BackgroundColor','w','FontName','consolas')
-        text(100, 100,...
-            {"#"+i},...
-            'Color','black', 'FontSize', 14, 'EdgeColor', 'none',...
-            'BackgroundColor','w','FontName','consolas')
-    end    
-    uiwait
+        close('all')
+    end
 end
-clear i q color I ans
+clear i q color I ans qqq
 %% Построение гистограммы по размерам частиц
 for i = 1:size(S)
     for j = 1:size(S(i).part, 2)
